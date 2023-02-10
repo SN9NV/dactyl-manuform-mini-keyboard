@@ -14,6 +14,7 @@
 
           devShell = pkgs.mkShell {
             buildInputs = with pkgs; [
+              clojure-lsp
               leiningen
               openscad
             ];
