@@ -11,3 +11,6 @@
 *.stl
 *.ai
 *.svg
+
+.clj-kondo/
+.lsp/
