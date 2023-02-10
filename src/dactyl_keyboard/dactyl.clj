@@ -1,6 +1,6 @@
 (ns dactyl-keyboard.dactyl
   (:refer-clojure :exclude [use import])
-  (:require [clojure.core.matrix :refer [array matrix mmul]]
+  (:require [clojure.core.matrix :refer [ mmul]]
             [scad-clj.scad :refer :all]
             [scad-clj.model :refer :all]
             [unicode-math.core :refer :all]))
@@ -590,11 +590,36 @@
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
 
 (def usb-holder-position (map + [17 19.3 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
-(def usb-holder-cube   (cube 15 12 2))
-(def usb-holder-space  (translate (map + usb-holder-position [0 (* -1 wall-thickness) 1]) usb-holder-cube))
-(def usb-holder-holder (translate usb-holder-position (cube 19 12 4)))
 
-(def usb-jack (translate (map + usb-holder-position [0 10 3]) (cube 8.1 20 3.1)))
+(def usb-height 3.25)
+(def usb-width 9)
+(def usb-depth 6)
+(def usb-border 2)
+
+(defn usbc-shape [width depth height]
+  (let [
+    radius (/ height 2)
+    end (rotate (deg2rad 90) [1 0 0] (binding [*fn* 32] (cylinder radius depth)))
+    end-distance (/ (- width height) 2)
+  ]
+  (union
+    (cube (- width height) depth height)
+    (translate [end-distance 0 0] end)
+    (translate [(* -1 end-distance) 0 0] end)
+)))
+
+(def usbc-port-outer
+  (translate
+    (map + usb-holder-position [0 -1 3])
+      (usbc-shape
+        (+ usb-width usb-border)
+        usb-depth
+        (+ usb-height usb-border))))
+
+(def usbc-port-hole
+  (translate
+    (map + usb-holder-position [0 -1 3])
+  (usbc-shape usb-width usb-depth usb-height)))
 
 (def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
@@ -609,26 +634,26 @@
         (translate [(first pro-micro-position) (second pro-micro-position) (last pro-micro-position)]))
    pro-micro-space))
 
-(def trrs-holder-size [6.2 10 2]) ; trrs jack PJ-320A
-(def trrs-holder-hole-size [6.2 10 6]) ; trrs jack PJ-320A
-(def trrs-holder-position  (map + usb-holder-position [-13.6 0 0]))
-(def trrs-holder-thickness 2)
-(def trrs-holder-thickness-2x (* 2 trrs-holder-thickness))
-(def trrs-holder
-  (union
-   (->> (cube (+ (first trrs-holder-size) trrs-holder-thickness-2x) (+ trrs-holder-thickness (second trrs-holder-size)) (+ (last trrs-holder-size) trrs-holder-thickness))
-        (translate [(first trrs-holder-position) (second trrs-holder-position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2)]))))
-(def trrs-holder-hole
-  (union
+; (def trrs-holder-size [6.2 10 2]) ; trrs jack PJ-320A
+; (def trrs-holder-hole-size [6.2 10 6]) ; trrs jack PJ-320A
+; (def trrs-holder-position  (map + usb-holder-position [-13.6 0 0]))
+; (def trrs-holder-thickness 2)
+; (def trrs-holder-thickness-2x (* 2 trrs-holder-thickness))
+; (def trrs-holder
+;   (union
+;    (->> (cube (+ (first trrs-holder-size) trrs-holder-thickness-2x) (+ trrs-holder-thickness (second trrs-holder-size)) (+ (last trrs-holder-size) trrs-holder-thickness))
+;         (translate [(first trrs-holder-position) (second trrs-holder-position) (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2)]))))
+; (def trrs-holder-hole
+;   (union
 
-  ; circle trrs hole
-   (->>
-    (->> (binding [*fn* 30] (cylinder 2.55 20))) ; 5mm trrs jack
-    (rotate (deg2rad  90) [1 0 0])
-    (translate [(first trrs-holder-position) (+ (second trrs-holder-position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
+;   ; circle trrs hole
+;    (->>
+;     (->> (binding [*fn* 30] (cylinder 2.55 20))) ; 5mm trrs jack
+;     (rotate (deg2rad  90) [1 0 0])
+;     (translate [(first trrs-holder-position) (+ (second trrs-holder-position) (/ (+ (second trrs-holder-size) trrs-holder-thickness) 2)) (+ 3 (/ (+ (last trrs-holder-size) trrs-holder-thickness) 2))])) ;1.5 padding
 
-  ; rectangular trrs holder
-   (->> (apply cube trrs-holder-hole-size) (translate [(first trrs-holder-position) (+ (/ trrs-holder-thickness -2) (second trrs-holder-position)) (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
+;   ; rectangular trrs holder
+;    (->> (apply cube trrs-holder-hole-size) (translate [(first trrs-holder-position) (+ (/ trrs-holder-thickness -2) (second trrs-holder-position)) (+ (/ (last trrs-holder-hole-size) 2) trrs-holder-thickness)]))))
 
 (defn screw-insert-shape [bottom-radius top-radius height]
   (union
@@ -695,24 +720,26 @@
    (key-wall-brace lastcol cornerrow 0 -1 web-post-br lastcol cornerrow 0 -1 wide-post-br)
    (key-wall-brace lastcol 0 0 1 web-post-tr lastcol 0 0 1 wide-post-tr)))
 
-(def model-right (difference
-                  (union
-                   key-holes
-                   pinky-connectors
-                   pinky-walls
-                   connectors
-                   thumb
-                   thumb-connectors
-                   (difference (union case-walls
-                                      screw-insert-outers
-                                      pro-micro-holder
-                                      usb-holder-holder
-                                      trrs-holder)
-                               usb-holder-space
-                               usb-jack
-                               trrs-holder-hole
-                               screw-insert-holes))
-                  (translate [0 0 -20] (cube 350 350 40))))
+(def model-right
+  (difference
+    (union
+      key-holes
+      pinky-connectors
+      pinky-walls
+      connectors
+      thumb
+      thumb-connectors
+      (difference
+        (union
+          case-walls
+          screw-insert-outers
+          pro-micro-holder
+          (translate [7 0 0] usbc-port-outer)
+          (translate [-7 0 0] usbc-port-outer))
+        screw-insert-holes
+        (translate [7 0 0] usbc-port-hole)
+        (translate [-7 0 0] usbc-port-hole)))
+    (translate [0 0 -20] (cube 350 350 40))))
 
 (spit "things/right.scad"
       (write-scad model-right))
@@ -745,8 +772,8 @@
                                       screw-insert-outers)
                                (translate [0 0 -10] screw-insert-screw-holes))))))
 
-(spit "things/test.scad"
-      (write-scad
-       (difference trrs-holder trrs-holder-hole)))
+; (spit "things/test.scad"
+;       (write-scad
+;        (difference trrs-holder trrs-holder-hole)))
 
 (defn -main [dum] 1)  ; dummy to make it easier to batch
