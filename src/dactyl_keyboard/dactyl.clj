@@ -591,9 +591,9 @@
 
 (def usb-holder-position (map + [17 19.3 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
 
-(def usb-height 3.25)
+(def usb-height 3.5)
 (def usb-width 9)
-(def usb-depth 6)
+(def usb-depth 7)
 (def usb-border 2)
 
 (defn usbc-shape [width depth height]
@@ -610,7 +610,7 @@
 
 (def usbc-port-outer
   (translate
-    (map + usb-holder-position [0 -1 3])
+    (map + usb-holder-position [0 -1.5 3])
       (usbc-shape
         (+ usb-width usb-border)
         usb-depth
@@ -618,10 +618,31 @@
 
 (def usbc-port-hole
   (translate
-    (map + usb-holder-position [0 -1 3])
+    (map + usb-holder-position [0 -1.5 3])
   (usbc-shape usb-width usb-depth usb-height)))
 
-(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-6 2 -15]))
+(def switch-width 8.2)
+(def switch-height 8.5)
+(def switch-depth 7)
+(def switch-border 2)
+
+(def switch-outer
+  (translate
+    (map + usb-holder-position [0 -1.5 14])
+    (cube
+      (+ switch-width switch-border)
+      switch-depth
+      (+ switch-height switch-border))))
+
+(def switch-hole
+  (translate
+    (map + usb-holder-position [0 -1.5 14])
+    (cube
+      switch-width
+      switch-depth
+      switch-height)))
+
+(def pro-micro-position (map + (key-position 0 1 (wall-locate3 -1 0)) [-5 2 -15]))
 (def pro-micro-space-size [4 10 12]) ; z has no wall;
 (def pro-micro-wall-thickness 2)
 (def pro-micro-holder-size [(+ pro-micro-wall-thickness (first pro-micro-space-size)) (+ pro-micro-wall-thickness (second pro-micro-space-size)) (last pro-micro-space-size)])
@@ -735,10 +756,15 @@
           screw-insert-outers
           pro-micro-holder
           (translate [7 0 0] usbc-port-outer)
-          (translate [-7 0 0] usbc-port-outer))
+          (translate [-7 0 0] usbc-port-outer)
+          (translate [7 0 0] switch-outer)
+        )
         screw-insert-holes
         (translate [7 0 0] usbc-port-hole)
-        (translate [-7 0 0] usbc-port-hole)))
+        (translate [-7 0 0] usbc-port-hole)
+        (translate [7 0 0] switch-hole)
+      )
+    )
     (translate [0 0 -20] (cube 350 350 40))))
 
 (spit "things/right.scad"
