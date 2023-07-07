@@ -252,7 +252,7 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (def web-thickness 2)
-(def post-size 0.1)
+(def post-size 0.8)
 (def web-post (->> (cube post-size post-size web-thickness)
                    (translate [0 0 (+ (/ web-thickness -2)
                                       plate-thickness)])))
