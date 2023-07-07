@@ -438,7 +438,9 @@
     (key-place 1 cornerrow web-post-bl)
     (thumb-tr-place thumb-post-tr)
     (key-place 1 cornerrow web-post-br)
-    (key-place 2 lastrow web-post-tl)
+    (key-place 2 lastrow web-post-bl)
+    (key-place 2 lastrow web-post-tl))
+   (triangle-hulls
     (key-place 2 lastrow web-post-bl)
     (thumb-tr-place thumb-post-tr)
     (key-place 2 lastrow web-post-bl)
