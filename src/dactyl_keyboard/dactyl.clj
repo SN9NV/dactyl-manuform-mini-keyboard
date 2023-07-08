@@ -70,7 +70,7 @@
 (def keyswitch-height 14) ;; Was 14.1, then 14.25
 (def keyswitch-width 14)
 
-(def sa-profile-key-height 12.7)
+(def sa-profile-key-height 3.5)
 
 (def plate-thickness 1.30)
 (def side-nub-thickness 4)
@@ -116,8 +116,8 @@
 ;; SA Keycaps ;;
 ;;;;;;;;;;;;;;;;
 
-(def sa-length 18.25)
-(def sa-double-length 37.5)
+(def sa-length 16.42)
+(def sa-double-length (* sa-length 2))
 (def sa-cap {1 (let [bl2 (/ 18.5 2)
                      m (/ 17 2)
                      key-cap (hull (->> (polygon [[bl2 bl2] [bl2 (- bl2)] [(- bl2) (- bl2)] [(- bl2) bl2]])
@@ -591,7 +591,7 @@
 
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
 
-(def usb-holder-position (map + [17 25 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
+(def usb-holder-position (map + [17 24.6 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
 
 (def usb-height 3.5)
 (def usb-width 9)
@@ -756,7 +756,6 @@
         (union
           case-walls
           screw-insert-outers
-          pro-micro-holder
           (translate [7 0 0] usbc-port-outer)
           (translate [-7 0 0] usbc-port-outer)
           (translate [7 0 0] switch-outer)
