@@ -20,8 +20,10 @@
 (def centerrow (- nrows 3))             ; controls front-back tilt
 (def centercol 2)                       ; controls left-right tilt / tenting (higher number is more tenting)
 (def tenting-angle (/ π 12))            ; or, change this for more precise tenting control
-(def column-style
-  (if (> nrows 5) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
+; (def column-style
+;   (if (> nrows 4) :orthographic :standard))  ; options include :standard, :orthographic, and :fixed
+(def column-style :orthographic)
+; (def column-style :standard)
 ; (def column-style :fixed)
 (def pinky-15u false)
 
@@ -32,10 +34,10 @@
 
 (def thumb-offsets [6 -3 7])
 
-(def keyboard-z-offset 10)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
+(def keyboard-z-offset 12)               ; controls overall height; original=9 with centercol=3; use 16 for centercol=2
 
-(def extra-width 2)                   ; extra space between the base of keys; original= 2
-(def extra-height 0.5)                  ; original= 0.5
+(def extra-width 2.25)                   ; extra space between the base of keys; original= 2
+(def extra-height 0.75)                  ; original= 0.5
 
 (def wall-z-offset -5)                 ; original=-15 length of the first downward-sloping part of the wall (negative)
 (def wall-xy-offset 5)                  ; offset in the x and/or y direction for the first downward-sloping part of the wall (negative)
@@ -70,14 +72,14 @@
 (def keyswitch-height 14) ;; Was 14.1, then 14.25
 (def keyswitch-width 14)
 
-(def sa-profile-key-height 3.5)
+(def sa-profile-key-height 8.6)
 
 (def plate-thickness 1.30)
 (def side-nub-thickness 4)
 (def retention-tab-thickness 1.5)
 (def retention-tab-hole-thickness (- plate-thickness retention-tab-thickness))
-(def mount-width (+ keyswitch-width 3))
-(def mount-height (+ keyswitch-height 3))
+(def mount-width (+ keyswitch-width 3.5))
+(def mount-height (+ keyswitch-height 3.5))
 
 (def single-plate
   (let [top-wall (->> (cube (+ keyswitch-width 3) 1.5 plate-thickness)
@@ -116,7 +118,7 @@
 ;; SA Keycaps ;;
 ;;;;;;;;;;;;;;;;
 
-(def sa-length 16.42)
+(def sa-length 17.5)
 (def sa-double-length (* sa-length 2))
 (def sa-cap {1 (let [bl2 (/ 18.5 2)
                      m (/ 17 2)
@@ -439,7 +441,8 @@
     (thumb-tr-place thumb-post-tr)
     (key-place 1 cornerrow web-post-br)
     (key-place 2 lastrow web-post-bl)
-    (key-place 2 lastrow web-post-tl))
+    (key-place 2 lastrow web-post-tl)
+   )
    (triangle-hulls
     (key-place 2 lastrow web-post-bl)
     (thumb-tr-place thumb-post-tr)
@@ -464,7 +467,8 @@
     (key-place 3 lastrow web-post-tr)
     (key-place 3 lastrow web-post-br)
     (key-place 3 lastrow web-post-tr)
-    (key-place 4 cornerrow web-post-bl))))
+    (key-place 4 cornerrow web-post-bl))
+  ))
 
 ;;;;;;;;;;
 ;; Case ;;
@@ -563,13 +567,13 @@
    (bottom-hull
     (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
     (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-    (thumb-bl-place (translate (wall-locate2 -0.3 1) web-post-tr))
-    (thumb-bl-place (translate (wall-locate3 -0.3 1) web-post-tr)))
+    (thumb-bl-place (translate (wall-locate2 0 1) web-post-tr))
+    (thumb-bl-place (translate (wall-locate3 0 1) web-post-tr)))
    (hull
     (left-key-place cornerrow -1 (translate (wall-locate2 -1 0) web-post))
     (left-key-place cornerrow -1 (translate (wall-locate3 -1 0) web-post))
-    (thumb-bl-place (translate (wall-locate2 -0.3 1) web-post-tr))
-    (thumb-bl-place (translate (wall-locate3 -0.3 1) web-post-tr))
+    (thumb-bl-place (translate (wall-locate2 0 1) web-post-tr))
+    (thumb-bl-place (translate (wall-locate3 0 1) web-post-tr))
     (thumb-tl-place web-post-tl))
    (hull
     (left-key-place cornerrow -1 web-post)
@@ -584,17 +588,18 @@
     (thumb-tl-place web-post-tl))
    (hull
     (thumb-bl-place web-post-tr)
-    (thumb-bl-place (translate (wall-locate1 -0.3 1) web-post-tr))
-    (thumb-bl-place (translate (wall-locate2 -0.3 1) web-post-tr))
-    (thumb-bl-place (translate (wall-locate3 -0.3 1) web-post-tr))
-    (thumb-tl-place web-post-tl))))
+    (thumb-bl-place (translate (wall-locate1 0 1) web-post-tr))
+    (thumb-bl-place (translate (wall-locate2 0 1) web-post-tr))
+    (thumb-bl-place (translate (wall-locate3 0 1) web-post-tr))
+    (thumb-tl-place web-post-tl))
+    ))
 
 (def usb-holder-ref (key-position 0 0 (map - (wall-locate2  0  -1) [0 (/ mount-height 2) 0])))
 
-(def usb-holder-position (map + [17 24.6 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
+(def usb-holder-position (map + [17 25 0] [(first usb-holder-ref) (second usb-holder-ref) 2]))
 
-(def usb-height 3.5)
-(def usb-width 9)
+(def usb-height 3.6)
+(def usb-width 9.1)
 (def usb-depth 7)
 (def usb-border 2)
 
