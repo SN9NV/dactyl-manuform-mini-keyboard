@@ -797,12 +797,20 @@
 
 (spit "things/right-plate.scad"
       (write-scad
+      ; (extrude-linear {:height 0.1 :twist 0 :convexity 0}
        (cut
-        (translate [0 0 -0.1]
-                   (difference (union case-walls
-                                      pinky-walls
-                                      screw-insert-outers)
-                               (translate [0 0 -10] screw-insert-screw-holes))))))
+          (difference
+            (union
+              case-walls
+              pinky-walls
+              screw-insert-outers
+            )
+            screw-insert-screw-holes
+          )
+      )
+    ; )
+  )
+)
 
 ; (spit "things/test.scad"
 ;       (write-scad
